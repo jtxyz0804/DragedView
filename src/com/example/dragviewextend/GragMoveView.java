@@ -78,7 +78,11 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 		//放在里面与放在外面表现不一致,local 变量和全局变量
 		int startXpos = 0;
 		int startYpos = 0;
+		//the preivew's marginright and width
+		int preRight = 0;
+		int preWidth = 0;
 		for(int i = 0; i < childCount; i++){
+			boolean isFirstView = false;
 			View childView = getChildAt(i);
 			GragMoveView.LayoutParams params = (GragMoveView.LayoutParams) childView.getLayoutParams();
 			int marginLeft = params.leftMargin;
@@ -86,14 +90,39 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 			int marginTop = params.topMargin;
 			int width  = childView.getMeasuredWidth();
 		    int height = childView.getMeasuredHeight();
-		    
-		    if((startXpos + width + marginLeft + marginRight)> viewWidth){
+		    //startXpos + width + marginLeft this is the start point of the view
+		    //so here we need to using startXpos + width + marginLeft + width to check if it is the first view in the line
+		    //check if the view is out
+		    int viewEnd = startXpos + preWidth + width + preRight + marginLeft;
+		    if((viewEnd)> viewWidth){
+		    	isFirstView = true;
 		    	startXpos = left + marginLeft;
 		    	startYpos += (height+marginTop);
 		    }
-		                     
+		    //for the first view
+		    if( i == 0){
+		    	isFirstView = true;
+		    	startXpos = left + marginLeft;    
+		    }
+		   //for the rest of view, we use the view's marginleft and the preview's marginright
+			if(!isFirstView){
+				if(i > 0){
+					View preView = getChildAt(i-1);
+					if(preView != null){
+						GragMoveView.LayoutParams preParam = (GragMoveView.LayoutParams) preView.getLayoutParams();
+						preRight = preParam.rightMargin;
+						preWidth = preView.getMeasuredWidth();
+					}
+				}
+				 startXpos += (preWidth+marginLeft+preRight);
+			}
+			
 			childView.layout(startXpos, startYpos, startXpos+width, startYpos+height);
-		    startXpos += (width+marginLeft+marginRight);
+			//we must make sure this part :
+			//int viewEnd = startXpos + preWidth + width + preRight + marginLeft;
+			//using the correct data
+			preWidth = width;
+			
 		}
 		
 	}

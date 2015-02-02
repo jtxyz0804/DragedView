@@ -5,48 +5,48 @@
 
     <View
         android:id="@+id/view_one"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop = "10dp"
         android:background="#ff0000" />
 
     <View
         android:id="@+id/view_two"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop = "10dp"
         android:background="#00ff00" />
 
     <View
         android:id="@+id/view_three"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop = "10dp"
         android:background="#0000ff" />
 
     <View
         android:id="@+id/view_four"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop = "10dp"
         android:background="#00ffff" />
 
     <View
         android:id="@+id/view_five"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop = "10dp"
         android:background="#ff00ff" />
 
     <View
         android:id="@+id/view_six"
-        android:layout_width="100dp"
-        android:layout_height="100dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop = "10dp"
         android:background="#ffff00" />
