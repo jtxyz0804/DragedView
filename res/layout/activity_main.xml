@@ -1,30 +1,57 @@
 <com.example.dragviewextend.GragMoveView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container"
     android:layout_width="match_parent"
-    android:layout_height="match_parent" >
+    android:layout_height="match_parent"
+    android:layout_marginLeft="3dp" >
 
-    <View
+    <LinearLayout
         android:id="@+id/view_one"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop = "10dp"
-        android:background="#ff0000" />
+        android:layout_marginTop="10dp"
+        android:background="#ff0000"
+        android:gravity="center"
+        android:orientation="vertical" >
 
-    <View
+        <TextView
+            android:id="@+id/view_one_text"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="View One" />
+
+        <Button
+            android:id="@+id/view_one_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:gravity="center"
+            android:text="View One button" />
+    </LinearLayout>
+
+    <RelativeLayout
         android:id="@+id/view_two"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop = "10dp"
-        android:background="#00ff00" />
+        android:layout_marginTop="10dp"
+        android:background="#00ff00" >
 
-    <View
+        <Button
+            android:id="@+id/view_two_button"
+            android:layout_width="match_parent"
+            android:layout_height="40dp"
+            android:layout_centerVertical="true"
+            android:text="View Two Button" />
+    </RelativeLayout>
+
+    <LinearLayout
+        android:orientation="vertical"
         android:id="@+id/view_three"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop = "10dp"
+        android:layout_marginTop="10dp"
         android:background="#0000ff" />
 
     <View
@@ -32,7 +59,7 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop = "10dp"
+        android:layout_marginTop="10dp"
         android:background="#00ffff" />
 
     <View
@@ -40,7 +67,7 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop = "10dp"
+        android:layout_marginTop="10dp"
         android:background="#ff00ff" />
 
     <View
@@ -48,7 +75,7 @@
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
-        android:layout_marginTop = "10dp"
+        android:layout_marginTop="10dp"
         android:background="#ffff00" />
 
 </com.example.dragviewextend.GragMoveView>

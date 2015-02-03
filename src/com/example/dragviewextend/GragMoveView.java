@@ -8,6 +8,7 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
+import android.view.View.OnClickListener;
 import android.view.View.OnLongClickListener;
 import android.view.View.OnTouchListener;
 import android.view.ViewGroup;
@@ -17,9 +18,10 @@ import android.view.animation.Animation.AnimationListener;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
 import android.widget.Toast;
+import android.widget.AdapterView.OnItemClickListener;
 
 @SuppressLint("NewApi")
-public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongClickListener{
+public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongClickListener, OnClickListener{
 	
  	private static final String TAG = "GragMoveView";
  	
@@ -28,7 +30,7 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 	private int lastXpos = 0;
 	private int lastYpos = 0;
 	
-	private int dragedView = 0;
+	private int dragedView = -1;
 	private boolean isViewDraging = false;
 	
 	//当前移动view的起始位置
@@ -46,6 +48,8 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 	private Rect initRect;
 	
 	private boolean isAnimationStart = false;
+	
+	private OnItemClickListener onItemClickListener;
 	
 	public GragMoveView(Context context) {
 		super(context);
@@ -68,6 +72,7 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 	public void init(){
 		setOnLongClickListener(this);
 		setOnTouchListener(this);
+		setOnClickListener(this);
 	}
 
 	@Override
@@ -102,7 +107,8 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 		    //for the first view
 		    if( i == 0){
 		    	isFirstView = true;
-		    	startXpos = left + marginLeft;    
+		    	startXpos = left + marginLeft;
+		    	startYpos = top + marginTop;
 		    }
 		   //for the rest of view, we use the view's marginleft and the preview's marginright
 			if(!isFirstView){
@@ -127,7 +133,8 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 		
 	}
     /**
-     * 获取自定义view中的view的宽度和各个子view的宽度
+     * get the view and its childview's width and height
+     * here we using measureChildren as default
      */
 	@Override
 	protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
@@ -137,17 +144,20 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 	}
 
 	/**
-	 * 这个方法默认返回的值为false,表示父类不拦截子类的消息
+	 * this return false : the parent view will not intercept child view's event
 	 */
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		// TODO Auto-generated method stub
-		return super.onInterceptTouchEvent(ev);
+		Log.i("aaaa", "onInterceptTouchEvent");
+		
+		return false;
 	}
 
 	@Override
 	public boolean onLongClick(View v) {
 		// TODO Auto-generated method stub
+		Log.i("aaaa", "onLongClick");
 		if(positionInView() != -1){
 			int position = positionInView();
 			dragedView = positionInView();
@@ -156,10 +166,22 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 			bringDragedViewtoFront();
 			isViewDraging = true;
 			scaleDragedView();
+			return true;
 		}
 		return false;
 	}
 
+	@Override
+	public void onClick(View arg0) {
+		// TODO Auto-generated method stub
+		Log.i("aaaa", "onClick");
+		int position = positionInView();
+		if (onItemClickListener != null && position != -1)
+			onItemClickListener.onItemClick(null,
+					getChildAt(position), position,
+					0);
+	}
+	
 	/**
 	 * ontouchlistener, dispatchtouchevent 会根据该方法返回的值，判断是否
 	 * 执行onTouchEvent
@@ -168,6 +190,7 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 	public boolean onTouch(View arg0, MotionEvent event) {
 		// TODO Auto-generated method stub
 		int action = event.getAction();
+		Log.i("aaaa", "onTouch");
 		switch (action & MotionEvent.ACTION_MASK) {
 		case MotionEvent.ACTION_DOWN:
 			initXpos = (int)event.getRawX();
@@ -175,12 +198,15 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 			break;
         case MotionEvent.ACTION_UP:
 			//抬起如果没有拖动，恢复view的尺寸
+        	Log.i("aaaa", "onTouch is in : ACTION_UP");
         	if(isViewDraging){
         		getDragedView().layout(newLeft, newTop, newRight, newBottom);
         		restogeDragedView();
+        		dragedView = -1;
+        		//the initRect must be null when you up
+        		//initRect = null;
         		isViewDraging = false;
-        	}else{
-        		//do nothing
+        		isAnimationStart = false;
         	}
 			break;
         case MotionEvent.ACTION_MOVE:
@@ -190,6 +216,10 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 		default:
 			break;
 		}
+		 if(dragedView != -1){
+			 Log.i("aaaa", "dragedView is : " +dragedView);
+		     return true;
+		    }
 		return false;
 	}
 	
@@ -248,14 +278,18 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 	 * 1.这个方法是对swapDragedView方法的优化，通过两个view的中心点来移动view
 	 */
 	public void swapDragedViewPro(int lastXpos, int lastYpos){
+		Log.i(TAG, "in swapDragedViewPro!!!");
 		int childCount = getChildCount();
 		View view = null;
 		Point oldPt = null;
 		Point newPt = null;
 		for(int i = 0; i < childCount; i++){
+			Log.i(TAG, "in swapDragedViewPro!!! in for ");
+			Log.i(TAG, "dragedView is : " + dragedView);
 			if(i == dragedView)
 				continue;
 			if(isTwoViewInterscet(getChildAt(i))){
+				Log.i(TAG, "in swapDragedViewPro!!! in isTwoViewInterscet ");
 				view = getChildAt(i);
 				break;
 			}
@@ -324,7 +358,6 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 				isAnimationStart = false;
 			}
 		});
-		//transAnimation.setFillAfter(true);
 		transAnimation.setInterpolator(new AccelerateDecelerateInterpolator());
 		view.startAnimation(transAnimation);
 		
@@ -341,7 +374,10 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 	 */
 	public void moveDragedView(int xDis, int yDis){
 		boolean canMove = false;
-		
+		//verytime we need to set initRect to null
+		if(initRect != null){
+			initRect = null;
+		}
 		View view = getDragedView();
 		int l = view.getLeft()+xDis;
 		int t = view.getTop()+yDis;
@@ -351,27 +387,36 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 		if(r < getRight() && (l > getLeft()) && (t > getTop()) && (b < getBottom())){
 			canMove = true;
 		}
-		
+		Log.i(TAG, "moveDragedView canMove is : " + canMove);
 		if(view != null && canMove){
 			view.layout(l, t, r, b);
+			Log.i(TAG, "view != null && canMove ");
 			//拖动view的矩形区域，必实际view缩小些
-			int rLeft = ((int)(l*1.2));
-			int rRight = ((int)(r*0.8));
-			int rTop = ((int)(t*1.2));
-			int rBottom = ((int)(b*0.8));
-			int temp = 0;
-			if(rLeft > rRight){
-				temp = rRight;
-				rRight = rLeft;
-				rLeft = temp;
-			}
-			
-			if(rTop > rBottom){
-				temp = rBottom;
-				rBottom = rTop;
-				rTop = temp;
-			}
-			initRect = new Rect(rLeft, rTop, rRight, rBottom);
+//			int rLeft = ((int)(l*1.2));
+//			int rRight = ((int)(r*0.8));
+//			int rTop = ((int)(t*1.2));
+//			int rBottom = ((int)(b*0.8));
+//			int temp = 0;
+//			if(rLeft > rRight){
+//				temp = rRight;
+//				rRight = rLeft;
+//				rLeft = temp;
+//			}
+//			
+//			if(rTop > rBottom){
+//				temp = rBottom;
+//				rBottom = rTop;
+//				rTop = temp;
+//			}
+			Rect rawRect = new Rect(l, t, r, b);
+			int centerX = rawRect.centerX();
+			int centerY = rawRect.centerY();
+			int width = view.getWidth();
+			int height = view.getHeight();
+			initRect = new Rect(centerX-width/4, centerY-height/4, centerX+width/4, centerY+height/4);
+			Log.i(TAG, "width is : " + width + " height is : " + height);
+			Log.i(TAG, "centerX-width/4 is : " + (centerX-width/4) + "centerY-height/4 is : " + (centerY-height/4)
+					+"centerX+width/4 is : " + (centerX+width/4) + "centerY+height/4 is : " + (centerY+height/4));
 		}
 	}
 	
@@ -459,22 +504,11 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 		int position = -1;
 		for(int i = 0; i < getChildCount(); i++){
 			View view = getChildAt(i);
-			//initXpos是相对于屏幕左上角的坐标
-//			int location[] = new int[2];
-//			view.getLocationOnScreen(location);
-//			int viewX = location[0];
-//			int viewY = location[1];
-//			if((initXpos > viewX && initXpos < (viewX+view.getWidth())) && (initYpos > viewY && initYpos < (viewY+view.getHeight()))){
-//				position = i;
-//				break;
-//			}
-			
 			if(inCurrentView(initXpos, initYpos, view)){
 				position = i;
 				break;
 			}
 		}
-		
 		return position;
 	}
 	
@@ -482,29 +516,35 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 	 * 判断两个view是否相交，通过缩小view所在的矩形区域判断
 	 */
 	public boolean isTwoViewInterscet(View view){
-		//能不能有更好的缩小矩形的方法或者先将view scale一下再计算
+		//change this method to use half rect of the view to check 
 		boolean isTwoViewInterscet = false;
-		int vLeft = (int)(view.getLeft()*1.1);
-		int vRight = (int)(view.getRight()*0.9);
-		int vTop = (int)(view.getTop()*1.12);
-		int vBottom = (int)(view.getBottom()*0.8);
-		int temp = 0;
-		if(vLeft > vRight){
-			temp = vRight;
-			vRight = vLeft;
-			vLeft = temp;
-		}
+//		int vLeft = (int)(view.getLeft()*1.1);
+//		int vRight = (int)(view.getRight()*0.9);
+//		int vTop = (int)(view.getTop()*1.12);
+//		int vBottom = (int)(view.getBottom()*0.8);
+//		int temp = 0;
+//		if(vLeft > vRight){
+//			temp = vRight;
+//			vRight = vLeft;
+//			vLeft = temp;
+//		}
+//		
+//		if(vTop > vBottom){
+//			temp = vBottom;
+//			vBottom = vTop;
+//			vTop = temp;
+//		}
+		Rect rawRect = new Rect(view.getLeft(), view.getTop(), view.getRight(), view.getBottom());
+		int centerX = rawRect.centerX();
+		int centerY = rawRect.centerY();
+		int width = view.getWidth();
+		int height = view.getHeight();
+		Rect rect = new Rect(centerX-width/4, centerY-height/4, centerX+width/4, centerY+height/4);
 		
-		if(vTop > vBottom){
-			temp = vBottom;
-			vBottom = vTop;
-			vTop = temp;
+		if(initRect != null && rect != null){
+			isTwoViewInterscet = initRect.intersect(rect);
 		}
-		Rect rect = new Rect(vLeft, vTop, vRight, vBottom);
-		
-		isTwoViewInterscet = initRect.intersect(rect);
 		Log.i("ccc", "isTwoViewInterscet : " + isTwoViewInterscet);
-		Log.i("ccc", "vLeft : " + vLeft +"; vTop : " + vTop + "; vRight" + vRight + "; vBottom" + vBottom);
 		return isTwoViewInterscet;
 	}
 	
@@ -538,5 +578,9 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 	public LayoutParams generateLayoutParams(AttributeSet attrs) {
 		// TODO Auto-generated method stub
 		return new GragMoveView.LayoutParams(getContext(), attrs);
+	}
+
+	public void setOnItemClickListener(OnItemClickListener l) {
+		this.onItemClickListener = l;
 	}
 }
