@@ -16,7 +16,7 @@ import android.widget.AdapterView.OnItemClickListener;
 public class MainActivity extends Activity implements OnClickListener{
 
 	private Button btnViewTwo;
-	private Button btnViewOne;
+	private MyButton btnViewOne;
 	private LinearLayout viewThree;
 	private GragMoveView gragView;
 	
@@ -26,7 +26,7 @@ public class MainActivity extends Activity implements OnClickListener{
 		setContentView(R.layout.activity_main);
 		
 		btnViewTwo = (Button)findViewById(R.id.view_two_button);
-		btnViewOne = (Button)findViewById(R.id.view_one_button);
+		btnViewOne = (MyButton)findViewById(R.id.view_one_button);
 		viewThree = (LinearLayout)findViewById(R.id.view_three);
 		gragView = (GragMoveView)findViewById(R.id.container);
 		gragView.setOnItemClickListener(new OnItemClickListener() {
@@ -44,7 +44,6 @@ public class MainActivity extends Activity implements OnClickListener{
 		btnViewTwo.setOnClickListener(this);
 		btnViewOne.setOnClickListener(this);
 	//	viewThree.setOnClickListener(this);
-		
 	}
 
 	@Override
@@ -63,6 +62,9 @@ public class MainActivity extends Activity implements OnClickListener{
             	Intent intent1 = new Intent();
             	intent1.setClass(getApplicationContext(), Test.class);
             	startActivity(intent1);
+                break;
+            case R.id.view_one_button_new:
+                Toast.makeText(getApplicationContext(), "the button is clicked", Toast.LENGTH_SHORT).show();
                 break;
 		    default:
 			    break;

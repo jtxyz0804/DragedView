@@ -1,11 +1,11 @@
-<com.example.dragviewextend.GragMoveView xmlns:android="http://schemas.android.com/apk/res/android"
+<com.example.dragviewextend.DragedView xmlns:android="http://schemas.android.com/apk/res/android"
     android:id="@+id/container"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:layout_marginLeft="3dp" >
 
     <LinearLayout
-        android:id="@+id/view_one"
+        android:id="@+id/view_one_new"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
@@ -15,14 +15,14 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/view_one_text"
+            android:id="@+id/view_one_text_new"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center"
             android:text="View One" />
 
-        <com.example.dragviewextend.MyButton
-            android:id="@+id/view_one_button"
+        <Button
+            android:id="@+id/view_one_button_new"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center"
@@ -30,7 +30,7 @@
     </LinearLayout>
 
     <RelativeLayout
-        android:id="@+id/view_two"
+        android:id="@+id/view_two_new"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
@@ -38,14 +38,14 @@
         android:background="#00ff00" >
 
         <Button
-            android:id="@+id/view_two_button"
+            android:id="@+id/view_two_button_new"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:layout_centerVertical="true"
             android:text="View Two Button" />
     </RelativeLayout>
     <LinearLayout
-        android:id="@+id/view_three"
+        android:id="@+id/view_three_new"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
@@ -54,14 +54,14 @@
         android:orientation="vertical" >
 
         <TextView
-            android:id="@+id/view_three_text"
+            android:id="@+id/view_three_text_new"
             android:layout_width="match_parent"
             android:layout_height="40dp"
             android:gravity="center"
             android:text="View three" />
 
         <ImageView
-            android:id="@+id/view_three_imageview"
+            android:id="@+id/view_three_imageview_new"
             android:layout_width="60dp"
             android:layout_height="60dp"
             android:gravity="center"
@@ -69,7 +69,7 @@
     </LinearLayout>
 
     <LinearLayout
-        android:id="@+id/view_four"
+        android:id="@+id/view_four_new"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
@@ -78,7 +78,7 @@
         android:orientation="vertical" />
 
     <View
-        android:id="@+id/view_five"
+        android:id="@+id/view_five_new"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
@@ -86,11 +86,11 @@
         android:background="#ff00ff" />
 
     <View
-        android:id="@+id/view_six"
+        android:id="@+id/view_six_new"
         android:layout_width="160dp"
         android:layout_height="160dp"
         android:layout_marginLeft="10dp"
         android:layout_marginTop="10dp"
         android:background="#ffff00" />
 
-</com.example.dragviewextend.GragMoveView>
+</com.example.dragviewextend.DragedView>

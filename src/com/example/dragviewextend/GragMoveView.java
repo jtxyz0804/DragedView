@@ -17,6 +17,7 @@ import android.view.animation.Animation;
 import android.view.animation.Animation.AnimationListener;
 import android.view.animation.ScaleAnimation;
 import android.view.animation.TranslateAnimation;
+import android.widget.LinearLayout;
 import android.widget.Toast;
 import android.widget.AdapterView.OnItemClickListener;
 
@@ -149,8 +150,21 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
 	@Override
 	public boolean onInterceptTouchEvent(MotionEvent ev) {
 		// TODO Auto-generated method stub
-		Log.i("aaaa", "onInterceptTouchEvent");
-		
+//		for(int i = 0; i < getChildCount(); i++){
+//			if(getChildAt(i).getId() == R.id.view_one){
+//				LinearLayout layout = (LinearLayout)getChildAt(i);
+//				for(int j = 0; j < layout.getChildCount(); j++){
+//					if((layout.getChildAt(j)).getId() == R.id.view_one_button){
+//						MyButton  button = (MyButton)layout.getChildAt(j);
+//						if(button.isLongClicked){
+//							Log.i("MyButton1", "onInterceptTouchEvent true");
+//							return true;
+//						}
+//					}
+//				}
+//			}
+//		}
+//		Log.i("MyButton1", "onInterceptTouchEvent false");
 		return false;
 	}
 
@@ -208,6 +222,7 @@ public class GragMoveView extends ViewGroup implements OnTouchListener, OnLongCl
         		isViewDraging = false;
         		isAnimationStart = false;
         	}
+        	
 			break;
         case MotionEvent.ACTION_MOVE:
 	        touchMove(event);
